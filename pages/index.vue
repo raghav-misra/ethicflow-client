@@ -158,10 +158,10 @@ export default {
             manualEntries: {
                 manufacturer: "",
                 barcode: "",
-            }
+            },
+            returnedData: null
         };
     },
-
     methods: {
         goHome() {
             this.manualEntries.barcode = "";
