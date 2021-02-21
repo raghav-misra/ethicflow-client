@@ -15,7 +15,7 @@
             <h1 class="text-white text-2xl">Type in the barcode ID or Product Name</h1>
             <h2 class="text-blue-400 cursor-pointer underline" @click="showManual = false; showCamera = true;">Or Scan It</h2>
             <form @submit.prevent="showResults()">
-              <input type="text" v-model="lookUp" class="outline-none h-10 w-96 p-5 m-4 mx-8 focus:ring-4 focus:ring-gray-500 focus:ring-opacity-50 rounded" placeholder="1234567890"><br>
+              <input type="text" required v-model="lookUp" class="outline-none h-10 w-96 p-5 m-4 mx-8 focus:ring-4 focus:ring-gray-500 focus:ring-opacity-50 rounded" placeholder="1234567890"><br>
               <button type="submit" class="bg-green-500 focus:ring-4 font-semibold text-white w-32 py-2 focus:ring-gray-500 focus:ring-opacity-50 rounded">Submit</button>
             </form>
           </section>
@@ -23,7 +23,7 @@
             <h1 class="text-white text-2xl">Type in the item's Manufacturer</h1>
             <h2 class="text-blue-400 cursor-pointer underline" @click="showManufacturer = false; showCamera = true;">Or Scan It</h2>
             <form @submit.prevent="showResults(true);">
-              <input type="text" v-model="lookUp" class="outline-none h-10 w-96 p-5 m-4 mx-8 focus:ring-4 focus:ring-gray-500 focus:ring-opacity-50 rounded" placeholder="Company Name"><br>
+              <input type="text" required v-model="lookUp" class="outline-none h-10 w-96 p-5 m-4 mx-8 focus:ring-4 focus:ring-gray-500 focus:ring-opacity-50 rounded" placeholder="Company Name"><br>
               <button type="submit" class="bg-green-500 focus:ring-4 font-semibold text-white w-32 py-2 focus:ring-gray-500 focus:ring-opacity-50 rounded">Submit</button>
             </form>
           </section>
@@ -44,7 +44,9 @@
               <h1 class="text-4xl font-semibold text-white processing">Searching for Aliases</h1>
               <h1 class="text-4xl font-semibold text-white processing">Looking for Sources</h1>
               <h1 class="text-4xl font-semibold text-white processing">Calculating Ratings</h1>
-               <h1 class="text-4xl font-semibold text-gray-500 animate-pulse processing">Finalising</h1>
+              <h1 class="text-4xl font-semibold text-gray-500 animate-pulse processing">Finalising</h1>
+              <br><br>
+              <h2 class="text-white cursor-pointer underline" @click="processing = false; showBtn = true;">Back</h2>
             </div>
           </section>
           <br>
@@ -55,7 +57,7 @@
           </div>
           <!-- Intro Button -->
           <section v-if="showBtn">
-            <button ref="camera"
+            <button ref="camera" @click="btnPress"
               class="z-10 my-32 hover:bg-blue-200 bg-blue-300 h-64 w-64 rounded-full text-white text-3xl shadow-2xl outline-none focus:outline-none focus:border-gray-100 border-solid border-2 border-transparent">Scan
               <br> Barcode
             </button>
@@ -138,12 +140,10 @@ export default Vue.extend({
       console.log(v)
       this.lookUp = v
       this.showResults()
-    }
-  },
-  mounted() {
-        const mainButton = this.$refs.camera
-        mainButton.addEventListener('click', () => {
-        const vm = this
+    },
+    btnPress(){
+      const mainButton = this.$refs.camera
+      const vm = this
             anime({
                 targets: mainButton,
                 scale:"0",
@@ -164,14 +164,14 @@ export default Vue.extend({
                 }
             })
 
-        })
-  }
+    }
+  },
+  
 })
 </script>
 
 <style>
 .float {
-
     animation: float 1.5s infinite alternate;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
