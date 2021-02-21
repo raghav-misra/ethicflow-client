@@ -39,6 +39,7 @@ export default {
     buildModules: [
         // https://go.nuxtjs.dev/tailwindcss
         '@nuxtjs/tailwindcss',
+        '@nuxtjs/pwa'
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
@@ -51,5 +52,16 @@ export default {
 
     env: {
         API_URL: "https://jhn9l0.deta.dev"
+    },
+
+    pwa: {
+        meta: {
+            name:"EthicFlow",
+            description:"Make better, more informed decisions about what you buy"
+        },
+        manifest: {
+            name: 'EthicFlow'
+           
+        }
     }
 }
