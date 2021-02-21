@@ -1,0 +1,23 @@
+{
+  "name": "ethicflow",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "generate": "nuxt-ts generate"
+  },
+  "dependencies": {
+    "@nuxt/typescript-runtime": "^2.0.1",
+    "animejs": "^3.2.1",
+    "core-js": "^3.8.3",
+    "nuxt": "^2.14.12",
+    "vue-barcode-reader": "0.0.3"
+  },
+  "devDependencies": {
+    "@nuxt/types": "^2.14.12",
+    "@nuxt/typescript-build": "^2.0.4",
+    "@nuxtjs/tailwindcss": "^3.4.2"
+  }
+}
