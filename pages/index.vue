@@ -110,6 +110,37 @@
                         </div>
                     </section>
 
+                    <!-- Metadata page -->
+                     <div v-if="currentPage === 'showmetadata'"
+                       class="result bg-white  rounded shadow-md mx-5 p-10 min-w-full text-black">
+                       <h1 class="text-2xl font-semibold text-black">One Moment...</h1>
+                       <div v-if="!productData">
+                         <div class="bg-gray-500 py-4 my-4 rounded animate-pulse w-96 m-auto"></div>
+                         <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
+                         <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
+                         <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
+                       </div>
+                       <div v-else>
+                         <h1 class="text-black text-xl">{{productData.title}}</h1>
+                         <br>
+                         <img :src="productData.image"/>
+                         <br>
+                         <br>
+                         <button @click="manualEntries.manufacturer = productData.brand; showResults()" class="
+                            bg-green-500 focus:ring-4 font-semibold 
+                            text-white w-32 py-2 focus:ring-gray-500 
+                            focus:ring-opacity-50 rounded">
+                           Looks Good!
+                         </button>
+                         <button @click="goHome(); productData = false;" class="
+                            bg-gray-500 focus:ring-4 font-semibold 
+                            text-white w-32 py-2 focus:ring-gray-500 
+                            focus:ring-opacity-50 rounded">
+                           Try Another Method
+                         </button>
+                       </div>
+
+                     </div>
                     <!-- Results -->
                     <ResultsDisplay
                         v-if="currentPage === 'results'"
@@ -134,40 +165,6 @@
                     </button>
                 </div>
                 <div v-else-if="currentPage === 'loading' || currentPage === 'results'"></div>
-                <div
-                    v-else-if="currentPage === 'showmetadata'"
-                    class="result bg-white md:mx-96 rounded shadow-md mx-5text-black"
-                >
-                    <h1 class="text-2xl font-semibold">One Moment...</h1>
-                    <div v-if="!productData">
-                        <div class="bg-gray-500 py-4 my-4 rounded animate-pulse w-96 m-auto"></div>
-                        <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
-                        <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
-                        <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
-                    </div>
-                    <div v-else>
-                        {{productData}}
-                        <button
-                            @click=""
-                            class="
-                            bg-green-500 focus:ring-4 font-semibold 
-                            text-white w-32 py-2 focus:ring-gray-500 
-                            focus:ring-opacity-50 rounded"
-                        >
-                            Looks Good!
-                        </button>
-                        <button
-                            @click=""
-                            class="
-                            bg-gray-500 focus:ring-4 font-semibold 
-                            text-white w-32 py-2 focus:ring-gray-500 
-                            focus:ring-opacity-50 rounded"
-                        >
-                            Try Another Method
-                        </button>
-                    </div>
-
-                </div>
                 <div v-else>
                     <h3 class="
                         text-2xl
@@ -322,7 +319,6 @@ export default {
         scanned(barcodeValue) {
             console.log("Found barcode", barcodeValue);
             this.scannedBarcode = barcodeValue;
-            alert(`Scanned barcode ${barcodeValue}`);
             this.showResults();
 
         },
