@@ -50,6 +50,6 @@ export default {
     },
 
     env: {
-        API_URL: "https://jhn9l0.deta.dev"
+        API_URL: "http://localhost:6969"
     }
 }

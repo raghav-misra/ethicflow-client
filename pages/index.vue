@@ -25,6 +25,7 @@
                 items-center justify-center
             ">
                 <div style="min-height: 40vh; display: flex; flex-direction: column;">
+                    <!-- CTA Landing -->
                     <button
                         v-if="currentPage === 'landing'"
                         ref="camera"
@@ -44,6 +45,7 @@
                     fas fa-camera text-5xl"
                     ></button>
 
+                    <!-- Scanner -->
                     <div
                         v-if="currentPage === 'scanner'"
                         class="intro"
@@ -51,6 +53,7 @@
                         <StreamBarcodeReader @decode="scanned"></StreamBarcodeReader>
                     </div>
 
+                    <!-- Type a manufacturer: -->
                     <div
                         v-if="currentPage === 'manufacturer-entry'"
                         class="flex flex-col flex-1 justify-center items-center"
@@ -70,6 +73,7 @@
                         >
                     </div>
 
+                    <!-- Barcode manual -->
                     <div
                         v-if="currentPage === 'barcode-entry'"
                         class="flex flex-col flex-1 justify-center items-center"
@@ -89,6 +93,7 @@
                         >
                     </div>
 
+                    <!-- Loader page -->
                     <section
                         v-if="currentPage === 'loading'"
                         class="result md:mx-64 mx-5 py-5 text-black"
@@ -98,12 +103,18 @@
                                 src="@/assets/float.svg"
                                 class="max-w-sm float m-auto"
                             />
-                            <h1 class="text-4xl font-semibold text-white processing">Searching for Aliases</h1>
-                            <h1 class="text-4xl font-semibold text-white processing">Looking for Sources</h1>
-                            <h1 class="text-4xl font-semibold text-white processing">Calculating Ratings</h1>
-                            <h1 class="text-4xl font-semibold text-gray-500 animate-pulse processing">Finalising</h1>
+                            <h1 class="text-3xl font-semibold text-white processing mx-2">Searching for Aliases</h1>
+                            <h1 class="text-3xl font-semibold text-white processing mx-2">Looking for Sources</h1>
+                            <h1 class="text-3xl font-semibold text-white processing mx-2">Calculating Ratings</h1>
+                            <h1 class="text-3xl font-semibold text-gray-500 animate-pulse processing mx-2">Finalising</h1>
                         </div>
                     </section>
+
+                    <!-- Results -->
+                    <ResultsDisplay
+                        v-if="currentPage === 'results'"
+                        :data="returnedData"
+                    />
                 </div>
             </main>
 
@@ -122,7 +133,41 @@
                         Submit
                     </button>
                 </div>
-                <div v-else-if="currentPage === 'loading'"></div>
+                <div v-else-if="currentPage === 'loading' || currentPage === 'results'"></div>
+                <div
+                    v-else-if="currentPage === 'showmetadata'"
+                    class="result bg-white md:mx-96 rounded shadow-md mx-5text-black"
+                >
+                    <h1 class="text-2xl font-semibold">One Moment...</h1>
+                    <div v-if="!productData">
+                        <div class="bg-gray-500 py-4 my-4 rounded animate-pulse w-96 m-auto"></div>
+                        <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
+                        <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
+                        <div class="bg-gray-500 py-2 my-4 rounded animate-pulse w-96 m-auto"></div>
+                    </div>
+                    <div v-else>
+                        {{productData}}
+                        <button
+                            @click=""
+                            class="
+                            bg-green-500 focus:ring-4 font-semibold 
+                            text-white w-32 py-2 focus:ring-gray-500 
+                            focus:ring-opacity-50 rounded"
+                        >
+                            Looks Good!
+                        </button>
+                        <button
+                            @click=""
+                            class="
+                            bg-gray-500 focus:ring-4 font-semibold 
+                            text-white w-32 py-2 focus:ring-gray-500 
+                            focus:ring-opacity-50 rounded"
+                        >
+                            Try Another Method
+                        </button>
+                    </div>
+
+                </div>
                 <div v-else>
                     <h3 class="
                         text-2xl
@@ -138,6 +183,7 @@
                         @click="currentPage = 'manufacturer-entry'"
                     >by manufacturer</span>
                 </div>
+
             </footer>
         </section>
     </div>
@@ -155,6 +201,7 @@ export default {
         return {
             currentPage: "landing", // landing, scanner, manufacturer-entry, barcode-entry, results, loading
             scannedBarcode: NaN,
+            productData: false,
             manualEntries: {
                 manufacturer: "",
                 barcode: "",
@@ -168,11 +215,10 @@ export default {
             this.manualEntries.manufacturer = "";
             this.scannedBarcode = NaN;
             this.currentPage = "landing"
-            anime({
+            this.$nextTick(() => anime({
                 targets: this.$refs.camera,
-                scale: [0, 1]
-            });
-
+                scale: [0, 1],
+            }));
         },
 
         goAbout() {
@@ -180,7 +226,17 @@ export default {
         },
 
         async showResults() {
+            this.returnedData = null;
             this.currentPage = "loading";
+
+            this.$nextTick(() => {
+                anime({
+                    targets: document.querySelectorAll('.processing'),
+                    translateY: [1000, 0],
+                    easing: "easeInOutSine",
+                    delay: anime.stagger(2000)
+                })
+            });
 
             try {
                 await this.fetchAPIData();
@@ -196,12 +252,21 @@ export default {
         async fetchAPIData() {
             // Manufacturer:
             if (this.manualEntries.manufacturer.trim().length > 0) {
-                const response = await axios.post(
+                const response = await axios.get(
                     `${process.env.API_URL}/data/by_manufacturer/${this.manualEntries.manufacturer.trim()}`
                 );
 
-                alert("Found manufacturer!");
-                console.log(response);
+                if (response.data.success) {
+                    alert("Found manufacturer!");
+                    console.log(response);
+
+                    this.currentPage = "results";
+                    this.returnedData = response.data.data;
+                }
+
+                else {
+                    throw "not found";
+                }
             }
 
             // Barcode (manual entry):
@@ -209,16 +274,16 @@ export default {
                 this.manualEntries.barcode.length > 0 &&
                 !isNaN(Number(this.manualEntries.barcode.trim()))
             ) {
-                const response = await axios.get(`${process.env.API_URL}/data/by_barcode/`, {
-                    number: Number(this.manualEntries.barcode.trim())
-                });
+                this.currentPage = "showmetadata"
+                const response = await axios.get(`${process.env.API_URL}/data/by_barcode/${Number(this.manualEntries.barcode.trim())}`);
+                this.productData = response.data
             }
 
             // Barcode (scanned):
             else if (!isNaN(this.scannedBarcode)) {
-                const response = await axios.post(`${process.env.API_URL}/data/by_barcode/`, {
-                    number: this.scannedBarcode
-                });
+                this.currentPage = "showmetadata"
+                const response = await axios.get(`${process.env.API_URL}/data/by_barcode/${Number(this.scannedBarcode)}`);
+                this.productData = response.data
             }
 
             else {
@@ -259,6 +324,7 @@ export default {
             this.scannedBarcode = barcodeValue;
             alert(`Scanned barcode ${barcodeValue}`);
             this.showResults();
+
         },
 
         clickCta() {
