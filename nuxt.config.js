@@ -51,7 +51,7 @@ export default {
     },
 
     env: {
-        API_URL: "https://ethicflow-server.raghavm.repl.co/"
+        API_URL: "https://ethicflow-server.raghavm.repl.co"
     },
 
     pwa: {
