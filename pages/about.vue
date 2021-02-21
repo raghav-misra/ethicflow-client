@@ -19,6 +19,7 @@
                 items-center justify-center
             ">
                 <div style="min-height: 76.666vh;">
+                    
                 </div>
             </main>
         </section>
@@ -29,7 +30,7 @@
 export default {
     methods: {
         goHome() {
-            location.href = "/";
+            this.$router.push("/");
         }
     }
 };

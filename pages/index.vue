@@ -11,7 +11,7 @@
                         <span
                             class="cursor-pointer mx-3 hover:text-blue-400"
                             @click="goHome"
-                        >start</span>
+                        >restart</span>
                         <span
                             class="cursor-pointer mx-3 hover:text-blue-400"
                             @click="goAbout"
@@ -23,13 +23,14 @@
             <main class="
                 flex-1 flex
                 items-center justify-center
-            "><div style="min-height: 40vh; display: flex; flex-direction: column;">
-                <button
-                    v-if="currentPage === 'landing'"
-                    ref="camera"
-                    @click="clickCta"
-                    title="Scan a barcode"
-                    class="
+            ">
+                <div style="min-height: 40vh; display: flex; flex-direction: column;">
+                    <button
+                        v-if="currentPage === 'landing'"
+                        ref="camera"
+                        @click="clickCta"
+                        title="Scan a barcode"
+                        class="
                     my-auto
                     cta-button
                     h-64 w-64
@@ -41,70 +42,70 @@
                     outline-none
                     border-2 border-transparent
                     fas fa-camera text-5xl"
-                ></button>
+                    ></button>
 
-                <div
-                    v-if="currentPage === 'scanner'"
-                    class="intro"
-                >
-                    <StreamBarcodeReader @decode="scanned"></StreamBarcodeReader>
-                </div>
-
-                <div v-if="currentPage === 'manufacturer-entry'"
-                    class="flex flex-col flex-1 justify-center items-center"
-                >
-                    <p class="text-lg">
-                        Find a manufacturer:
-                    </p>
-                    <input
-                        type="text"
-                        required
-                        v-model="manualEntries.manufacturer"
-                        class="
-                            outline-none h-10 w-72 p-5 m-4 mx-8 
-                            focus:ring-4 focus:ring-gray-500 
-                            focus:ring-opacity-50 rounded text-center"
-                        placeholder="Company Name">
-                </div>
-
-                <div v-if="currentPage === 'barcode-entry'"
-                    class="flex flex-col flex-1 justify-center items-center"
-                >
-                    <p class="text-lg">
-                        Search by barcode:
-                    </p>
-                    <input
-                        type="text"
-                        required
-                        v-model="manualEntries.barcode"
-                        class="
-                            outline-none h-10 w-72 p-5 m-4 mx-8 
-                            focus:ring-4 focus:ring-gray-500 
-                            focus:ring-opacity-50 rounded text-center"
-                        placeholder="Company Name">
-                </div>
-
-                <section
-                    v-if="currentPage === 'loading'"
-                    class="result md:mx-64 mx-5 py-5 text-black"
-                >
-                    <div class="text-left md:text-center">
-                        <img
-                            src="@/assets/float.svg"
-                            class="max-w-sm float m-auto"
-                        />
-                        <h1 class="text-4xl font-semibold text-white processing">Searching for Aliases</h1>
-                        <h1 class="text-4xl font-semibold text-white processing">Looking for Sources</h1>
-                        <h1 class="text-4xl font-semibold text-white processing">Calculating Ratings</h1>
-                        <h1 class="text-4xl font-semibold text-gray-500 animate-pulse processing">Finalising</h1>
-                        <br><br>
-                        <h2
-                            class="text-white cursor-pointer underline"
-                            @click="processing = false; showBtn = true;"
-                        >Back</h2>
+                    <div
+                        v-if="currentPage === 'scanner'"
+                        class="intro"
+                    >
+                        <StreamBarcodeReader @decode="scanned"></StreamBarcodeReader>
                     </div>
-                </section>
-            </div></main>
+
+                    <div
+                        v-if="currentPage === 'manufacturer-entry'"
+                        class="flex flex-col flex-1 justify-center items-center"
+                    >
+                        <p class="text-lg">
+                            Find a manufacturer:
+                        </p>
+                        <input
+                            type="text"
+                            required
+                            v-model="manualEntries.manufacturer"
+                            class="
+                            outline-none h-10 w-72 p-5 m-4 mx-8 
+                            focus:ring-4 focus:ring-gray-500 text-gray-800
+                            focus:ring-opacity-50 rounded text-center"
+                            placeholder="Company Name"
+                        >
+                    </div>
+
+                    <div
+                        v-if="currentPage === 'barcode-entry'"
+                        class="flex flex-col flex-1 justify-center items-center"
+                    >
+                        <p class="text-lg">
+                            Search by barcode:
+                        </p>
+                        <input
+                            type="number"
+                            required
+                            v-model="manualEntries.barcode"
+                            class="
+                                outline-none h-10 w-72 p-5 m-4 mx-8 
+                                focus:ring-4 focus:ring-gray-500 text-gray-800
+                                focus:ring-opacity-50 rounded text-center"
+                            placeholder="Type barcode..."
+                        >
+                    </div>
+
+                    <section
+                        v-if="currentPage === 'loading'"
+                        class="result md:mx-64 mx-5 py-5 text-black"
+                    >
+                        <div class="text-left md:text-center">
+                            <img
+                                src="@/assets/float.svg"
+                                class="max-w-sm float m-auto"
+                            />
+                            <h1 class="text-4xl font-semibold text-white processing">Searching for Aliases</h1>
+                            <h1 class="text-4xl font-semibold text-white processing">Looking for Sources</h1>
+                            <h1 class="text-4xl font-semibold text-white processing">Calculating Ratings</h1>
+                            <h1 class="text-4xl font-semibold text-gray-500 animate-pulse processing">Finalising</h1>
+                        </div>
+                    </section>
+                </div>
+            </main>
 
             <footer class="
                 flex-1 flex
@@ -121,6 +122,7 @@
                         Submit
                     </button>
                 </div>
+                <div v-else-if="currentPage === 'loading'"></div>
                 <div v-else>
                     <h3 class="
                         text-2xl
@@ -146,6 +148,8 @@ import anime from "animejs/lib/anime.es.js";
 import { StreamBarcodeReader } from "vue-barcode-reader";
 import axios from "axios";
 
+const wait = ms => new Promise(cb => setTimeout(cb, ms));
+
 export default {
     data() {
         return {
@@ -160,19 +164,44 @@ export default {
 
     methods: {
         goHome() {
-            location.reload();
+            this.manualEntries.barcode = "";
+            this.manualEntries.manufacturer = "";
+            this.scannedBarcode = NaN;
+            this.currentPage = "landing"
+            anime({
+                targets: this.$refs.camera,
+                scale: [0, 1]
+            });
+
         },
 
         goAbout() {
             this.$router.push("/about");
         },
 
-        async showResults(isManufacturer = false) {
+        async showResults() {
             this.currentPage = "loading";
-            let data = {};
 
+            try {
+                await this.fetchAPIData();
+            }
+
+            catch (e) {
+                this.goHome();
+                alert("Whoops! Looks like your barcode or manufacturer wasn't found.");
+                console.log("error", e);
+            }
+        },
+
+        async fetchAPIData() {
             // Manufacturer:
-            if (this.manualEntries.manufacturer.length > 0) {
+            if (this.manualEntries.manufacturer.trim().length > 0) {
+                const response = await axios.post(
+                    `${process.env.API_URL}/data/by_manufacturer/${this.manualEntries.manufacturer.trim()}`
+                );
+
+                alert("Found manufacturer!");
+                console.log(response);
             }
 
             // Barcode (manual entry):
@@ -180,7 +209,7 @@ export default {
                 this.manualEntries.barcode.length > 0 &&
                 !isNaN(Number(this.manualEntries.barcode.trim()))
             ) {
-                const response = await axios.post(`${process.env.API_URL}/data/by_barcode/`, {
+                const response = await axios.get(`${process.env.API_URL}/data/by_barcode/`, {
                     number: Number(this.manualEntries.barcode.trim())
                 });
             }
@@ -192,31 +221,37 @@ export default {
                 });
             }
 
-            /* Fetch 1st API */
-            if (isManufacturer) {
-                // Skip finding product data, go directly to ratings
-                this.processing = true
-            }
-            else if (!isNaN(this.lookUp)) {
-                this.showResult = true;
-                //Barcode
-                data = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${this.lookUp}`);
-
-            }
             else {
-                this.showResult = true;
-                //Title
-                data = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${this.lookUp}`);
+                alert("Looks like something went wrong, please try again.");
+                this.goHome();
             }
 
-            this.product = data;
+            // let data = {};
+            // /* Fetch 1st API */
+            // if (isManufacturer) {
+            //     // Skip finding product data, go directly to ratings
+            //     this.processing = true
+            // }
+            // else if (!isNaN(this.lookUp)) {
+            //     this.showResult = true;
+            //     //Barcode
+            //     data = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${this.lookUp}`);
 
-            this.$nextTick(() => anime({
-                targets: document.querySelectorAll('.processing'),
-                translateY: [1000, 0],
-                easing: "easeInOutSine",
-                delay: anime.stagger(2000)
-            }))
+            // }
+            // else {
+            //     this.showResult = true;
+            //     //Title
+            //     data = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${this.lookUp}`);
+            // }
+
+            // this.product = data;
+
+            // this.$nextTick(() => anime({
+            //     targets: document.querySelectorAll('.processing'),
+            //     translateY: [1000, 0],
+            //     easing: "easeInOutSine",
+            //     delay: anime.stagger(2000)
+            // }))
         },
 
         scanned(barcodeValue) {
